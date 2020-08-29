@@ -161,8 +161,15 @@ class ControllerPaymentBhartiPay extends Controller
             $data['footer'] = $this->load->controller('common/footer');
             $data['header'] = $this->load->controller('common/header');
         
-         $this->model_checkout_order->addOrderHistory($order_id,1);
-         $this->response->setOutput($this->load->view('common/success.tpl', $data));
+         if ($_POST['STATUS']=='Captured') {
+            $this->model_checkout_order->addOrderHistory($order_id, $this->config->get('bhartipay_order_status_id'));
+            $this->response->redirect($this->url->link('checkout/success', 'language=' . $this->config->get('config_language')));
+         }
+         else{
+            $this->model_checkout_order->addOrderHistory($order_id,1);
+            $this->response->setOutput($this->load->view('common/success.tpl', $data));
+
+         }
            
         } else {
             $this->model_checkout_order->addOrderHistory($order_id, $this->config->get('bhartipay_order_status_id'));
